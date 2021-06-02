@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 //import com.sun.org.apache.xpath.internal.operations.Operation;
 
-import homework_l3.BitOperations;;
+import homework_l3.BitOperations;
 
 class BitOperationsTest {
 
@@ -63,7 +63,7 @@ class BitOperationsTest {
 		assertEquals(8, BitOperations.log2(256));
 		assertEquals(8, BitOperations.log2(400));
 		assertEquals(10, BitOperations.log2(1024));
-		assertEquals(10, BitOperations.log2(-1024));	
+		assertEquals(10, BitOperations.log2(-1024));
 	}
 	
 	
