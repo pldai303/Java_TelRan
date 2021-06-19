@@ -2,12 +2,15 @@ package telran.utils;
 
 import java.util.Arrays;
 
+import java.util.function.Predicate;
+
 public class ArrayList<T> implements List<T> {
 
 	private static final int DEFAULT_CAPACITY = 16;
 	private T array[];
 	int size = 0;
 
+	@SuppressWarnings("unchecked")
 	public ArrayList(int capacity) {
 		array = (T[]) new Object[capacity];
 	}
@@ -22,12 +25,10 @@ public class ArrayList<T> implements List<T> {
 			allocate();
 		}
 		array[size++] = obj;
-
 	}
 
 	private void allocate() {
 		array = Arrays.copyOf(array, array.length * 2);
-
 	}
 
 	@Override
@@ -62,7 +63,6 @@ public class ArrayList<T> implements List<T> {
 			array[size] = null;
 			res = true;
 		}
-
 		return res;
 	}
 
@@ -96,7 +96,6 @@ public class ArrayList<T> implements List<T> {
 
 	@Override
 	public boolean remove(T pattern) {
-
 		return remove(indexOf(pattern));
 	}
 
@@ -105,9 +104,7 @@ public class ArrayList<T> implements List<T> {
 		int size = objects.size();
 		for (int i = 0; i < size; i++) {
 			add(objects.get(i));
-
 		}
-
 	}
 
 	@Override
@@ -119,23 +116,22 @@ public class ArrayList<T> implements List<T> {
 			clean(0, size);
 			res = true;
 		} else {
-			res =  removing(patterns, isRetain);
+			res = removing(patterns, isRetain);
 		}
 		return res;
-		
 	}
 
 	private void clean(int startIndex, int sizeBefore) {
 		for (int i = startIndex; i < sizeBefore; i++) {
 			array[i] = null;
 		}
-		
+
 	}
 
 	private boolean removing(List<T> patterns, boolean isRetain) {
 		int sizeBeforeRemoving = size;
 		int indexAfterRemoving = 0;
-		for(int i = 0; i < sizeBeforeRemoving; i++) {
+		for (int i = 0; i < sizeBeforeRemoving; i++) {
 			T current = array[i];
 			if (conditionRemoving(patterns, current, isRetain)) {
 				size--;
@@ -150,8 +146,7 @@ public class ArrayList<T> implements List<T> {
 		return res;
 	}
 
-	private boolean conditionRemoving(List<T> patterns, T current,
-			boolean isRetain) {
+	private boolean conditionRemoving(List<T> patterns, T current, boolean isRetain) {
 		boolean res = patterns.indexOf(current) >= 0;
 		return isRetain ? !res : res;
 	}
@@ -182,5 +177,47 @@ public class ArrayList<T> implements List<T> {
 			res = true;
 		}
 		return res;
+	}
+
+	@Override
+	public int indexOf(Predicate<T> predicate) {
+		int index = 0;
+		while ((index < size) && !predicate.test(array[index])) {
+			index++;
+		}
+		return index < size ? index : -1;
+	}
+
+	@Override
+	public int lastIndexOf(Predicate<T> predicate) {
+		int index = size - 1;
+		while ((index < size) && (index > -1) && !predicate.test(array[index])) {
+			index--;
+		}
+		return index > 0 ? index : -1;
+	}
+
+	@Override
+	public boolean removeIf(Predicate<T> predicate) {
+		int i = 0;
+		int beforeRemoveSize = size();
+		while (i < size) {
+			if (predicate.test(array[i])) {
+				remove(i);
+			} else
+				i++;
+		}
+		if (beforeRemoveSize > size()) {
+			return true;
+		} else
+			return false;
+	}
+
+	@Override
+	public void clean() {
+		int i = 0;
+		while (i < size) {
+			remove(i);
+		}
 	}
 }
