@@ -42,16 +42,6 @@ public interface List<T> {
 	 * @return number of elements
 	 */
 	int size();
-
-	/**
-	 * 
-	 * @param pattern
-	 * @return index of first occurrence for an object in array otherwise return -1
-	 */
-	int indexOf(T pattern);
-
-	int lastIndexOf(T pattern);
-
 	/**
 	 * removes first occurred object equaled to a given pattern
 	 * 
@@ -74,7 +64,17 @@ public interface List<T> {
 	 * @param patterns
 	 * @return true if at least one object has been removed
 	 */
-	boolean removeAll(List<T> patterns);
+	default boolean removeAll(List<T> patterns) {
+		boolean res = false;
+		if (this == patterns) {
+			clean();
+			res = true;
+		} else {
+			Predicate<T> predicate = temp -> patterns.indexOf( temp ) >= 0;
+			res = removeIf(predicate);	
+		}
+		return res;
+	}
 
 	/**
 	 * removes all objects not equaled to the given patterns
@@ -82,7 +82,17 @@ public interface List<T> {
 	 * @param patterns
 	 * @return true if at least one object has been removed
 	 */
-	boolean retainAll(List<T> patterns);
+	default boolean retainAll(List<T> patterns) {
+		boolean res = false;
+		if (this == patterns) {
+			clean();
+			res = true;
+		} else {
+			Predicate<T> predicate = temp -> patterns.indexOf( temp ) < 0;
+			res = removeIf(predicate);	
+		}
+		return res;
+	}
 
 	/**
 	 * sets new reference to an object at existing index
@@ -102,7 +112,7 @@ public interface List<T> {
 	 * @return return true if swapped, false in the case of any wrong index
 	 */
 	boolean swap(int index1, int index2);
-
+	
 	/**
 	 * 
 	 * @param pattern
@@ -154,26 +164,6 @@ public interface List<T> {
 		} while (!isSorted);
 	}
 
-	/**
-	 * 
-	 * @param predicate
-	 * @return either index (first object matching or -1)
-	 */
-	int indexOf(Predicate<T> predicate);
-
-	/**
-	 * 
-	 * @param predicate
-	 * @return either index (first object matching or -1)
-	 */
-	int lastIndexOf(Predicate<T> predicate);
-
-	/**
-	 * removing all objects matching a given predicate
-	 * 
-	 * @param predicate
-	 * @return true if at least one object has been removed
-	 */
 	boolean removeIf(Predicate<T> predicate);
 
 	/**
@@ -190,7 +180,40 @@ public interface List<T> {
 		};
 		return removeIf(predicate);
 	}
-
+	/**
+	 * 
+	 * @param predicate
+	 * @return either index (first object matching or -1)
+	 */
+	default int indexOf(T pattern) {
+		int size = size();
+		int index = 0;
+		Predicate<T> predicate = n -> n.equals(pattern);
+		while (index < size && !predicate.test(get(index))) {
+			index++;
+		}
+		return index < size ? index : -1;
+	}
+	/**
+	 * 
+	 * @param predicate
+	 * @return either index (first object matching or -1)
+	 */
+	default int lastIndexOf(T pattern) {
+		int size = size();
+		int index = size - 1;
+		Predicate<T> predicate = n -> n.equals(pattern);
+		while ((index < size) && (index > -1) && !predicate.test(get(index))) {
+			index--;
+		}
+		return index > 0 ? index : -1;	
+	}
+	/**
+	 * removing all objects matching a given predicate
+	 * 
+	 * @param predicate
+	 * @return true if at least one object has been removed
+	 */
 	/**
 	 * remove all elements from list
 	 */

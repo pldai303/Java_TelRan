@@ -84,18 +84,12 @@ class ListTest {
 		intList.add(11);
 		intList.add(13);
 		intList.add(15);
-
+		intList.add(15);
+	
 		testPersons = new ArrayList<Person>();
 		testPersons.addAll(personsMen);
 		testPersons.addAll(personsWomen);
 		testComparator = new IdComparator();
-	}
-
-	@Test
-	void lastIndexOfPredicateTest() {
-		assertEquals(9, intList.lastIndexOf(new DividerNumbersPredicate(2)));
-		assertEquals(12, intList.lastIndexOf(new DividerNumbersPredicate(3)));
-		assertEquals(-1, intList.lastIndexOf(new DividerNumbersPredicate(16)));
 	}
 
 	@Test
@@ -195,15 +189,14 @@ class ListTest {
 	}
 
 	@Test
-	void indexOfLast() {
-		// Changed condition. This objects are equal if their ids and names are equal;
+	void indexOfLastTest() {
+		assertEquals(13,intList.lastIndexOf(15));
 		Person pattern = new Person(0, "Alexander Solzhenitsyn", 89);
 		assertEquals(0, personsMen.lastIndexOf(pattern));
 		pattern = new Person(1, "Fyodor Dostoevsky", 59);
 		assertEquals(1, personsMen.lastIndexOf(pattern));
 		pattern = new Person(7, "Taras Shevchenko", 47);
 		assertEquals(7, personsMen.lastIndexOf(pattern));
-
 	}
 
 	@Test
@@ -230,12 +223,14 @@ class ListTest {
 		boolean isListsEquals = listComparer(listToTest, personsMen);
 		assertTrue(isListsEquals);
 	}
-
+	
 	@Test
 	void removeAllTest() {
 		personsMen.removeAll(personToDelete);
 		boolean isListsEquals = listComparer(personsMen, checkDeletedPersons);
 		assertTrue(isListsEquals);
+		personsMen.removeAll(personsMen);
+		
 	}
 
 	@Test
@@ -244,7 +239,6 @@ class ListTest {
 		boolean isListsEquals = listComparer(checkRetainPerson, personsMen);
 		assertTrue(isListsEquals);
 	}
-
 	@Test
 	void setTest() {
 		Person person = new Person(8, "George Orwell", 46);
@@ -266,11 +260,18 @@ class ListTest {
 	}
 
 	@Test
-	void indexOfPredicateTest() {
-		int q = 2;
-		Predicate<Integer> pred = n -> n % q == 0;
-		assertEquals(1, intList.indexOf(pred));
-		assertEquals(9, intList.indexOf(n -> n % 10 == 0));
-		assertEquals(-1, intList.indexOf(n -> n % 16 == 0));
+	void indexOfTest() {
+		assertEquals(11, intList.indexOf(13)); 
+		assertEquals(12, intList.indexOf(15)); 
+		assertEquals(0, intList.indexOf(1)); 
+		assertEquals(-1, intList.indexOf(125));
+		Person pattern = new Person(7, "Taras Shevchenko", 47);
+		assertEquals(7, personsMen.indexOf(pattern));;
+		pattern = new Person(0, "Alexander Solzhenitsyn", 89);
+		assertEquals(0, personsMen.indexOf(pattern));;
+		pattern =new Person(4, "Mikhail Sholokhov", 78);
+		assertEquals(4, personsMen.indexOf(pattern));;
+		pattern = new Person(0, "NoName", 0);
+		assertEquals(-1, personsMen.indexOf(pattern));;
 	}
 }
