@@ -85,7 +85,6 @@ public interface List<T> {
 	default boolean retainAll(List<T> patterns) {
 		boolean res = false;
 		if (this == patterns) {
-			clean();
 			res = true;
 		} else {
 			Predicate<T> predicate = temp -> patterns.indexOf( temp ) < 0;
@@ -226,5 +225,8 @@ public interface List<T> {
 		}
 
 	}
+	
+	
+	
 
 }
