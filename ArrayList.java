@@ -76,14 +76,6 @@ public class ArrayList<T>  implements List<T> {
 		return size;
 	}
 
-	@Override
-	public int lastIndexOf(T pattern) {
-		int index = size - 1;
-		while (index >= 0 && !array[index].equals(pattern)) {
-			index--;
-		}
-		return index >= 0 ? index : -1;
-	}
 
 	@Override
 	public boolean remove(T pattern) {
@@ -140,6 +132,15 @@ public class ArrayList<T>  implements List<T> {
 			remove(i);
 		}
 	}
+	/*@Override
+	public int lastIndexOf(T pattern) {
+		int index = size - 1;
+		while (index >= 0 && !array[index].equals(pattern)) {
+			index--;
+		}
+		return index >= 0 ? index : -1;
+	}*/
+
 	
 	/*private void clean(int startIndex, int sizeBefore) {
 	for (int i = startIndex; i < sizeBefore; i++) {

@@ -201,12 +201,12 @@ public interface List<T> {
 	 */
 	default int lastIndexOf(T pattern) {
 		int size = size();
-		int index = size - 1;
+		int index = size-1;
 		Predicate<T> predicate = n -> n.equals(pattern);
-		while ((index < size) && (index > -1) && !predicate.test(get(index))) {
+		while ( (index < size) && (index > -1) && !predicate.test(get(index)) ) {
 			index--;
 		}
-		return index > 0 ? index : -1;	
+		return index >= 0 ? index : -1;	
 	}
 	/**
 	 * removing all objects matching a given predicate
