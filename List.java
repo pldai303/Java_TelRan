@@ -141,6 +141,11 @@ public interface List<T> {
 	static <T> T min(List<T> list, Comparator<T> comp) {
 		return max(list, comp.reversed());
 	}
+	
+	static <T> T min(List<T> list) {
+		return max(list, (Comparator<T>)Comparator.naturalOrder().reversed());
+	}
+	
 
 	@SuppressWarnings("unchecked")
 	default void sort() {
@@ -171,13 +176,7 @@ public interface List<T> {
 	 * @return true if at least one object has been removed
 	 */
 	default boolean removeRepeated() {
-		Predicate<T> predicate = temp -> {
-			if (lastIndexOf(temp) == indexOf(temp)) {
-				return false;
-			}
-			return true;
-		};
-		return removeIf(predicate);
+		return removeIf((obj) -> indexOf(obj) != lastIndexOf(obj));
 	}
 	/**
 	 * 
@@ -185,13 +184,8 @@ public interface List<T> {
 	 * @return either index (first object matching or -1)
 	 */
 	default int indexOf(T pattern) {
-		int size = size();
-		int index = 0;
-		Predicate<T> predicate = n -> n.equals(pattern);
-		while (index < size && !predicate.test(get(index))) {
-			index++;
-		}
-		return index < size ? index : -1;
+		
+	    return indexOf((obj) -> obj != null && obj.equals(pattern));
 	}
 	/**
 	 * 
@@ -199,13 +193,7 @@ public interface List<T> {
 	 * @return either index (first object matching or -1)
 	 */
 	default int lastIndexOf(T pattern) {
-		int size = size();
-		int index = size-1;
-		Predicate<T> predicate = n -> n.equals(pattern);
-		while ( (index < size) && (index > -1) && !predicate.test(get(index)) ) {
-			index--;
-		}
-		return index >= 0 ? index : -1;	
+		return lastIndexOf((obj -> obj != null && obj.equals(pattern)));
 	}
 	/**
 	 * removing all objects matching a given predicate
@@ -225,6 +213,16 @@ public interface List<T> {
 		}
 
 	}
+	
+	int indexOf(Predicate<T> predicate);
+    
+    /**
+     * Returns last index of element matching predicate
+     * @param predicate
+     * @return either index (last object matching predicate) or -1
+     */
+    int lastIndexOf(Predicate<T> predicate);
+    
 	
 	
 	

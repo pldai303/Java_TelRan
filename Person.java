@@ -4,13 +4,13 @@ public class Person implements Comparable<Person> {
 	
 	int id;
 	String name;
-	int age;
+	//int age;
 
-	public Person(int id1, String name, int age) {
+	public Person(int id1, String name/*, int age*/) {
 		super();
 		this.id = id1;
 		this.name = name;
-		this.age = age;
+		//this.age = age;
 	}
 
 	public int compareTo(Person o) {
@@ -21,8 +21,8 @@ public class Person implements Comparable<Person> {
 		return id;
 	}
 
-	public int getAge() {
-		return age;
+	public String getName() {
+		return name;
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class Person implements Comparable<Person> {
 		if (getClass() != obj.getClass())
 			return false;
 		Person other = (Person) obj;
-		if ((this.id == other.id) && (this.name == other.name) && (this.age == other.age)) {
+		if ((this.id == other.id) && (this.name == other.name) /*&& (this.age == other.age)*/) {
 			return true;
 		}
 		return false;
@@ -50,7 +50,7 @@ public class Person implements Comparable<Person> {
 
 	@Override
 	public String toString() {
-		return "Person [id=" + id + ", name = " + name + ", age=" + age + "]";
+		return "Person [id=" + id + ", name = " + name + /*", age=" + age + */"]";
 	}
 
 }

@@ -2,24 +2,24 @@ package telran.utils;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.Comparator;
 import java.util.function.Predicate;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+
+
+
+
+
 class ListTest {
-
-	List<Person> personsMen;
-	List<Person> personsWomen;
-	List<Person> personToDelete;
-	List<Person> checkDeletedPersons;
-	List<Person> personToRetain;
-	List<Person> checkRetainPerson;
-	List<Integer> intList;
-	List<Person> testPersons;
-	IdComparator testComparator;
-
+	private static final int N_PERSONS = 100;
+	List<Integer> listInt;
+	List<String> listString;
+	List<Person> listPersons;
+	Person p1 = new Person(1, "Moshe");
+	Person p2 = new Person(2, "Alex");
+	
 	public static boolean listComparer(List<Person> firstList, List<Person> secondList) {
 		boolean testResult = false;
 		if (firstList.size() == secondList.size()) {
@@ -35,243 +35,253 @@ class ListTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		personsMen = new ArrayList<Person>();
-		personsMen.add(new Person(0, "Alexander Solzhenitsyn", 89));
-		personsMen.add(new Person(1, "Fyodor Dostoevsky", 59));
-		personsMen.add(new Person(2, "Alexander Pushkin", 37));
-		personsMen.add(new Person(3, "Leo Tolstoy", 82));
-		personsMen.add(new Person(4, "Mikhail Sholokhov", 78));
-		personsMen.add(new Person(5, "Nikolai Gogol", 42));
-		personsMen.add(new Person(6, "Anton Chekhov", 44));
-		personsMen.add(new Person(7, "Taras Shevchenko", 47));
-
-		personsWomen = new ArrayList<Person>();
-		personsWomen.add(new Person(5, "Suzanne Collins", 58));
-		personsWomen.add(new Person(4, "Astrid Lindgren", 94));
-		personsWomen.add(new Person(3, "Lesya Ukrainka", 42));
-		personsWomen.add(new Person(2, "Joanne Rowling", 55));
-		personsWomen.add(new Person(1, "Agatha Christie", 85));
-
-		personToDelete = new ArrayList<Person>();
-		personToDelete.add(new Person(0, "Alexander Solzhenitsyn", 89));
-		personToDelete.add(new Person(7, "Taras Shevchenko", 47));
-		personToDelete.add(new Person(5, "Nikolai Gogol", 42));
-		checkDeletedPersons = new ArrayList<Person>();
-		checkDeletedPersons.add(new Person(1, "Fyodor Dostoevsky", 59));
-		checkDeletedPersons.add(new Person(2, "Alexander Pushkin", 37));
-		checkDeletedPersons.add(new Person(3, "Leo Tolstoy", 82));
-		checkDeletedPersons.add(new Person(4, "Mikhail Sholokhov", 78));
-		checkDeletedPersons.add(new Person(6, "Anton Chekhov", 44));
-
-		personToRetain = new ArrayList<Person>();
-		personToRetain.add(new Person(7, "Taras Shevchenko", 47));
-		personToRetain.add(new Person(0, "Alexander Solzhenitsyn", 89));
-		checkRetainPerson = new ArrayList<>();
-		checkRetainPerson.add(new Person(0, "Alexander Solzhenitsyn", 89));
-		checkRetainPerson.add(new Person(7, "Taras Shevchenko", 47));
-
-		intList = new ArrayList<Integer>();
-		intList.add(1);
-		intList.add(2);
-		intList.add(3);
-		intList.add(4);
-		intList.add(5);
-		intList.add(6);
-		intList.add(7);
-		intList.add(8);
-		intList.add(9);
-		intList.add(10);
-		intList.add(11);
-		intList.add(13);
-		intList.add(15);
-		intList.add(15);
-	
-		testPersons = new ArrayList<Person>();
-		testPersons.addAll(personsMen);
-		testPersons.addAll(personsWomen);
-		testComparator = new IdComparator();
-	}
-
-	@Test
-	void removeIf() {
-		intList.removeIf(temp -> temp % 2 == 0); // remove all elements where value divided by 2
-		assertEquals(1, intList.get(0));
-		assertEquals(3, intList.get(1));
-		assertEquals(5, intList.get(2));
-		assertEquals(15, intList.get(7));
-		personsMen.removeIf(temp -> (temp.id < 8) && (temp.age < 80)); // remove all objects where id < 8 and age < 80
-		assertEquals(personsMen.get(0), new Person(0, "Alexander Solzhenitsyn", 89));
-		assertEquals(personsMen.get(1), new Person(3, "Leo Tolstoy", 82));
-		// personsMen.displayList(personsMen);
-	}
-
-	@Test
-	void cleanTest() {
-		personsMen.clean();
-		assertTrue(personsMen.size() == 0);
-	}
-
-	@Test
-	void removeRepeated() {
-		List<Integer> duplicatesList = new ArrayList<Integer>();
-		duplicatesList.add(1);
-		duplicatesList.add(2);
-		duplicatesList.add(1);
-		duplicatesList.add(2);
-		duplicatesList.add(2);
-		duplicatesList.add(3);
-		duplicatesList.add(5);
-		duplicatesList.add(4);
-		duplicatesList.add(1);
-		duplicatesList.add(3);
-		duplicatesList.add(5);
-		duplicatesList.add(4);
-		duplicatesList.add(5);
-		duplicatesList.removeRepeated();
-		personsMen.clean();
-		personsMen.add(new Person(0, "Alexander Solzhenitsyn", 89));
-		personsMen.add(new Person(1, "Fyodor Dostoevsky", 59));
-		personsMen.add(new Person(2, "Alexander Pushkin", 37));
-		personsMen.add(new Person(3, "Leo Tolstoy", 82));
-		personsMen.add(new Person(4, "Mikhail Sholokhov", 78));
-		personsMen.add(new Person(5, "Nikolai Gogol", 42));
-		personsMen.add(new Person(6, "Anton Chekhov", 44));
-		personsMen.add(new Person(7, "Taras Shevchenko", 47));
-		assertFalse(personsMen.removeRepeated());
-		personsMen.add(new Person(3, "Leo Tolstoy", 82));
-		personsMen.add(new Person(4, "Mikhail Sholokhov", 78));
-		personsMen.add(new Person(5, "Nikolai Gogol", 42));
-		assertTrue(personsMen.removeRepeated());
-		personsMen.sort();
-		assertEquals(personsMen.get(0), new Person(0, "Alexander Solzhenitsyn", 89));
-		assertEquals(personsMen.get(3), new Person(3, "Leo Tolstoy", 82));
-		assertEquals(personsMen.get(7), new Person(7, "Taras Shevchenko", 47));
-	}
-	
-	@Test
-	void max() {
-		// Max integer in list
-		assertEquals(15, List.max(intList));
-		// The oldest person din list
-		assertEquals(94, List.max(testPersons, testComparator.ageCompare).age);
-	}
-
-	@Test
-	void min() {
-		// Min integer in list
-		assertEquals(1, List.min(intList, Comparator.naturalOrder()));
-		// The youngest person in list
-		assertEquals(37, List.min(testPersons, testComparator.ageCompare).age);
-	}
-
-	@Test
-	void sort() {
-		// Sorting integer values in natural order
-		intList.sort();
-		assertEquals(1, intList.get(0));
-		assertEquals(2, intList.get(1));
-		assertEquals(5, intList.get(4));
-		// Sorting object list in natural order (by id)
-		testPersons.sort();
-		assertEquals(0, testPersons.get(0).id);
-		assertEquals(3, testPersons.get(6).id);
-		assertEquals(7, testPersons.get(12).id);
-		// Sorting object list in reverse order (by id)
-		testPersons.sort(testComparator);
-		assertEquals(7, testPersons.get(0).id);
-		assertEquals(3, testPersons.get(6).id);
-		assertEquals(0, testPersons.get(12).id);
-		// Sorting object list in natural order (by age, 0 - isAllive)
-		testPersons.sort(testComparator.ageCompare);
-		assertEquals(37, testPersons.get(0).age);
-		assertEquals(58, testPersons.get(6).age);
-		assertEquals(94, testPersons.get(12).age);
-	}
-
-	@Test
-	void indexOfLastTest() {
-		assertEquals(13,intList.lastIndexOf(15));
-		Person pattern = new Person(0, "Alexander Solzhenitsyn", 89);
-		assertEquals(0, personsMen.lastIndexOf(pattern));
-		pattern = new Person(1, "Fyodor Dostoevsky", 59);
-		assertEquals(1, personsMen.lastIndexOf(pattern));
-		pattern = new Person(7, "Taras Shevchenko", 47);
-		assertEquals(7, personsMen.lastIndexOf(pattern));
-	}
-
-	@Test
-	void removeTest() {
-		Person pattern = new Person(7, "Taras Shevchenko", 47);
-		assertTrue(personsMen.remove(pattern));
-		pattern = new Person(6, "Anton Chekhov", 44);
-		assertTrue(personsMen.remove(pattern));
-		pattern = new Person(0, "Alexander Solzhenitsyn", 89);
-		assertTrue(personsMen.remove(pattern));
-
-	}
-
-	@Test
-	void addAllTest() {
-		List<Person> listToTest = new ArrayList<Person>();
-		for (int i = 0; i < personsMen.size(); i++) {
-			listToTest.add(personsMen.get(i), listToTest.size());
-		}
-		for (int i = 0; i < personsWomen.size(); i++) {
-			listToTest.add(personsWomen.get(i), listToTest.size());
-		}
-		personsMen.addAll(personsWomen);
-		boolean isListsEquals = listComparer(listToTest, personsMen);
-		assertTrue(isListsEquals);
-	}
-	
-	@Test
-	void removeAllTest() {
-		personsMen.removeAll(personToDelete);
-		boolean isListsEquals = listComparer(personsMen, checkDeletedPersons);
-		assertTrue(isListsEquals);
-		personsMen.removeAll(personsMen);
+		listInt = new LinkedList<>();
+		listInt.add(1); listInt.add(2);
+		listInt.add(3); listInt.add(4);
+		listInt.add(5); 
 		
 	}
-
+	
+	@Test 
+	void addTest() {
+		initialArrayTest();
+		listInt.add(6);
+		assertEquals(6, listInt.get(5));
+	}
+	
 	@Test
-	void retainAllTest() {
-		personsMen.retainAll(personToRetain);
-		boolean isListsEquals = listComparer(checkRetainPerson, personsMen);
-		assertTrue(isListsEquals);
+	void addIndexTest() {
+		assertTrue(listInt.add(100, 0));
+		assertEquals(100, listInt.get(0));
+		assertEquals(1, listInt.get(1));
+		assertTrue(listInt.add(200, listInt.size()));
+		assertEquals(200, listInt.get(listInt.size() - 1));
+		assertTrue(listInt.add(300, 1));
+		assertEquals(300, listInt.get(1));
+		assertEquals(1, listInt.get(2));
+		assertFalse(listInt.add(400, -1));
+		assertFalse(listInt.add(400, 100));
+		assertEquals(8, listInt.size());
+	}
+	@Test
+	void removeTest() {
+		assertTrue(listInt.remove(0));
+		assertEquals(2, listInt.get(0));
+		assertTrue(listInt.remove(1));
+		assertEquals(4, listInt.get(1));
+		assertFalse(listInt.remove(-1));
+		assertFalse(listInt.remove(listInt.size()));
+		assertEquals(3, listInt.size());
+		assertTrue(listInt.remove(listInt.size() - 1));
+	}
+	@Test
+	void getTest() {
+		assertEquals(1, listInt.get(0));
+		assertNull(listInt.get(-1));
+		assertNull(listInt.get(100));
+	}
+	@Test
+	void sizeTest() {
+		assertEquals(5, listInt.size());
+	}
+	@Test
+	void indexOfTest() {
+		assertEquals(0, listInt.indexOf(1));
+		assertEquals(2, listInt.indexOf(3));
+		assertEquals(3, listInt.indexOf(4));
+		assertEquals(-1, listInt.indexOf(100));
+		listInt.add(500,2);
+		assertEquals(2, listInt.indexOf(500));
+		Person prs1 = new Person(0, "Moshe");
+		Person pattern = new Person(0, "Moshe");
+		List<Person> persons = new ArrayList<>();
+		persons.add(prs1);
+		assertEquals(0, persons.indexOf(pattern));
+	}
+	@Test
+	void lastIndexOfTest() {
+		listInt.add(2);
+		assertEquals(listInt.indexOf(1), listInt.lastIndexOf(1));
+		assertEquals(listInt.indexOf(-1), listInt.lastIndexOf(-1));
+		assertNotEquals(listInt.indexOf(2), listInt.lastIndexOf(2));
+		assertEquals(listInt.size() - 1, listInt.lastIndexOf(2));
+	}
+	@Test
+	void removePatternTest() {
+		assertTrue(listInt.remove((Integer)2));
+		assertEquals(-1, listInt.indexOf(2));
+		assertFalse(listInt.remove((Integer)2));
+	}
+	@Test
+	void addAllTest() {
+		int sizeOld = listInt.size();
+		listInt.addAll(listInt);
+		
+		assertEquals(sizeOld * 2, listInt.size());
+		for (int i = 0; i< sizeOld; i++) {
+			assertNotEquals(listInt.indexOf(listInt.get(i)),
+					listInt.lastIndexOf(listInt.get(i)));
+		}
+	}
+	@Test
+	void removeAll() throws Exception {
+		listInt.removeAll(listInt);
+		assertEquals(0, listInt.size());
+		setUp();
+		listInt.add(2);
+		List<Integer> patterns = new ArrayList<>();
+		patterns.add(2);
+		listInt.removeAll(patterns);
+		assertEquals(-1, listInt.indexOf(2));
+		assertEquals(4, listInt.size());
+		
+	}
+	@Test
+	void retainAll() {
+		listInt.retainAll(listInt);
+		assertEquals(5, listInt.size());
+		initialArrayTest();
+		List<Integer> patterns = new ArrayList<>();
+		patterns.add(2);
+		listInt.add(2);
+		listInt.retainAll(patterns);
+		assertEquals(0, listInt.indexOf(2));
+		assertEquals(1, listInt.lastIndexOf(2));
+		assertEquals(2, listInt.size());
+		listInt.add(0);
+		
 	}
 	@Test
 	void setTest() {
-		Person person = new Person(8, "George Orwell", 46);
-		personsMen.set(person, 7);
-		assertTrue(personsMen.get(7).equals(person));
-		personsMen.set(person, 0);
-		assertTrue(personsMen.get(0).equals(person));
+		assertEquals(2, listInt.set(20, 1));
+		assertEquals(20, listInt.get(1));
+		assertNull(listInt.set(20, -10));
+		assertNull(listInt.set(20, 10));
+		assertEquals(-1, listInt.indexOf(2));
 	}
-
 	@Test
 	void swapTest() {
-		Person manToSwap1 = new Person(0, "", 0);
-		manToSwap1 = personsMen.get(0);
-		Person manToSwap2 = new Person(0, "", 0);
-		manToSwap2 = personsMen.get(7);
-		personsMen.swap(0, 7);
-		assertTrue(manToSwap1.equals(personsMen.get(7)));
-		assertTrue(manToSwap2.equals(personsMen.get(0)));
+		assertTrue(listInt.swap(0, 1));
+		assertEquals(0, listInt.indexOf(2));
+		assertEquals(1, listInt.indexOf(1));
+		assertFalse(listInt.swap(-10, 1));
+		assertFalse(listInt.swap(1, 10));
+	}
+	@Test
+	void maxTest() {
+		
+		setUpPersons();
+		assertEquals(p2, List.max(listPersons));
+		assertEquals(p1, List.max(listPersons, new IdComparator()));
+		assertEquals(5, List.max(listInt));
+		
+	}
+	@Test
+	void minTest() {
+		
+		setUpPersons();
+		assertEquals(p1, List.min(listPersons));
+		assertEquals(p2, List.min(listPersons, new IdComparator()));
+		assertEquals(1, List.min(listInt));
 	}
 
-	@Test
-	void indexOfTest() {
-		assertEquals(11, intList.indexOf(13)); 
-		assertEquals(12, intList.indexOf(15)); 
-		assertEquals(0, intList.indexOf(1)); 
-		assertEquals(-1, intList.indexOf(125));
-		Person pattern = new Person(7, "Taras Shevchenko", 47);
-		assertEquals(7, personsMen.indexOf(pattern));;
-		pattern = new Person(0, "Alexander Solzhenitsyn", 89);
-		assertEquals(0, personsMen.indexOf(pattern));;
-		pattern =new Person(4, "Mikhail Sholokhov", 78);
-		assertEquals(4, personsMen.indexOf(pattern));;
-		pattern = new Person(0, "NoName", 0);
-		assertEquals(-1, personsMen.indexOf(pattern));;
+
+	private void setUpPersons() {
+		listPersons = new LinkedList<>();
+		listPersons.add(p1);
+		listPersons.add(p2);
 	}
+	@Test
+	void sortTest() {
+		setUpPersons();
+		//listPersons.sort(new NamesComparator());
+		listPersons.sort((p1, p2) -> p1.getName().compareTo(p2.getName()) );
+		assertEquals(p2, listPersons.get(0));
+		assertEquals(p1, listPersons.get(1));
+		listPersons.sort();
+		assertEquals(p1, listPersons.get(0));
+		assertEquals(p2, listPersons.get(1));
+		fillRandomPersons(N_PERSONS);
+		listPersons.sort();
+		personsSortTest();
+		
+	}
+
+
+	private void personsSortTest() {
+		int size = listPersons.size() - 1;
+		for (int i = 0; i < size; i++) {
+			assertTrue(listPersons.get(i).compareTo(listPersons.get(i + 1)) <= 0);
+		}
+	}
+
+
+	private void fillRandomPersons(int nPersons) {
+		for (int i = 0;  i < nPersons; i++) {
+			listPersons.add(new Person((int) (Math.random() * Integer.MAX_VALUE),
+					"name" + Math.random()));
+		}
+		
+	}
+	@Test
+	void indexOfPredicateTest() {
+		int q =  2;
+		Predicate<Integer> pred = n -> n % q == 0;
+		assertEquals(1, listInt.indexOf(pred));
+		assertEquals(-1, listInt.indexOf(n -> n % 10 == 0));
+	}
+	@Test
+	void lastIndexOfPredicateTest() {
+		assertEquals(3, listInt.lastIndexOf(new DividerNumbersPredicate(2)));
+		assertEquals(-1, listInt.lastIndexOf(new DividerNumbersPredicate(10)));
+	}
+	
+	@Test
+	void removeIf() throws Exception {
+		listInt.removeIf(n -> true);
+		assertEquals(0, listInt.size());
+		setUp();
+		assertFalse(listInt.removeIf(n -> n > 100));
+		initialArrayTest();
+		assertTrue(listInt.removeIf(n -> n % 2 == 0));
+		assertEquals(3, listInt.size());
+		assertFalse(listInt.remove((Integer)2));
+		assertFalse(listInt.remove((Integer)4));
+		
+	}
+	
+	
+	@Test
+	void cleanTest() {
+		listInt.clean();
+		assertEquals(0, listInt.size());
+	}
+	 @Test
+	    void removeRepeated() {
+		 for(int i = 0; i < 100; i++) {
+			 addSameInReverse();
+		 }
+	        listInt.removeRepeated();
+	        assertEquals(5, listInt.size());
+	        listInt.sort();
+	        initialArrayTest();
+	    }
+
+
+	private void addSameInReverse() {
+		listInt.add(5);
+		listInt.add(4);
+		listInt.add(3);
+		listInt.add(2);
+		listInt.add(1);
+	}
+
+
+	private void initialArrayTest() {
+		int size = listInt.size();
+		for (int i = 0; i < size; i++) {
+		    assertEquals(i + 1, listInt.get(i));
+		}
+	}	
+		
 }
