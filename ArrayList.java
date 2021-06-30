@@ -1,7 +1,7 @@
 package telran.utils;
 
 import java.util.Arrays;
-
+import java.util.Iterator;
 import java.util.function.Predicate;
 
 public class ArrayList<T>  extends AbstractList<T>  {
@@ -9,6 +9,23 @@ public class ArrayList<T>  extends AbstractList<T>  {
 	private static final int DEFAULT_CAPACITY = 16;
 	private T array[];
 	int size = 0;
+	
+	private class ArrayListIterator implements Iterator<T> {
+		int index = 0;
+		@Override
+		public boolean hasNext() {
+		return index < size;	
+		}
+
+		@Override
+		public T next() {
+		 T current = array[index];
+		 index ++;
+		 return current;
+		}
+		
+	}
+	
 
 	@SuppressWarnings("unchecked")
 	public ArrayList(int capacity) {
@@ -74,8 +91,12 @@ public class ArrayList<T>  extends AbstractList<T>  {
 	@Override
 	public void addAll(List<T> objects) {
 		int size = objects.size();
-		for (int i = 0; i < size; i++) {
-			add(objects.get(i));
+		Iterator<T> iterator = objects.iterator();
+		for (int i=0; i<size; i++)
+		{
+			if (iterator.hasNext()) {
+				add(iterator.next());	
+			}
 		}
 	}
 
@@ -121,14 +142,7 @@ public class ArrayList<T>  extends AbstractList<T>  {
 			remove(i);
 		}
 	}
-	/*@Override
-	public int lastIndexOf(T pattern) {
-		int index = size - 1;
-		while (index >= 0 && !array[index].equals(pattern)) {
-			index--;
-		}
-		return index >= 0 ? index : -1;
-	}*/
+
 
 	@Override
 	public int indexOf(Predicate<T> predicate) {
@@ -149,33 +163,10 @@ public class ArrayList<T>  extends AbstractList<T>  {
 		return index < size ? index : -1;
 	}
 
-	
-	/*private void clean(int startIndex, int sizeBefore) {
-	for (int i = startIndex; i < sizeBefore; i++) {
-		array[i] = null;
-	}
-	}
-	
-	private boolean removing(List<T> patterns, boolean isRetain) {
-	int sizeBeforeRemoving = size;
-	int indexAfterRemoving = 0;
-	for (int i = 0; i < sizeBeforeRemoving; i++) {
-		T current = array[i];
-		if (conditionRemoving(patterns, current, isRetain)) {
-			size--;
-		} else {
-			array[indexAfterRemoving++] = array[i];
-		}
-	}
-	boolean res = sizeBeforeRemoving > size;
-	if (res) {
-		clean(size, sizeBeforeRemoving);
-	}
-	return res;
+	@Override
+	public Iterator<T> iterator() {
+		
+		return new ArrayListIterator();
 	}
 
-	private boolean conditionRemoving(List<T> patterns, T current, boolean isRetain) {
-	boolean res = patterns.indexOf(current) >= 0;
-	return isRetain ? !res : res;
-	}*/
 }

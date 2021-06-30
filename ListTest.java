@@ -2,10 +2,13 @@ package telran.utils;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Iterator;
 import java.util.function.Predicate;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+
 
 
 
@@ -194,7 +197,6 @@ class ListTest {
 	@Test
 	void sortTest() {
 		setUpPersons();
-		//listPersons.sort(new NamesComparator());
 		listPersons.sort((p1, p2) -> p1.getName().compareTo(p2.getName()) );
 		assertEquals(p2, listPersons.get(0));
 		assertEquals(p1, listPersons.get(1));
@@ -209,19 +211,33 @@ class ListTest {
 
 
 	private void personsSortTest() {
-		int size = listPersons.size() - 1;
-		for (int i = 0; i < size; i++) {
-			assertTrue(listPersons.get(i).compareTo(listPersons.get(i + 1)) <= 0);
-		}
+		Person[] array = new Person[listPersons.size()];
+		fillArrayFromList(listPersons, array);
+		testArraySorted(array);
 	}
 
+
+	private void testArraySorted(Person[] array) {
+		for (int i=1; i<array.length; i++) {
+			assertTrue(array[i - 1].compareTo(array[i]) <=0  );
+		}
+		
+	}
+
+	private <T> void fillArrayFromList(List<T> list, T[] array) {
+		int index = 0;
+		for (T obj: list) {
+			array[index++] = obj;
+		}
+		
+		
+	}
 
 	private void fillRandomPersons(int nPersons) {
 		for (int i = 0;  i < nPersons; i++) {
 			listPersons.add(new Person((int) (Math.random() * Integer.MAX_VALUE),
 					"name" + Math.random()));
 		}
-		
 	}
 	@Test
 	void indexOfPredicateTest() {
@@ -283,5 +299,40 @@ class ListTest {
 		    assertEquals(i + 1, listInt.get(i));
 		}
 	}	
+	
+	@Test
+	void TestIteraors() {
+		int i = 0;
+		LinkedList<Person> prs = new LinkedList<Person>();
+		prs.add(new Person(0, "Name_0"));
+		prs.add(new Person(1, "Name_1"));
+		prs.add(new Person(2, "Name_2"));
+		Iterator<Person> iterLinkedList = prs.iterator();
+		while (true) {
+			if (iterLinkedList.hasNext()) {
+				assertEquals(iterLinkedList.next(), prs.get(i));
+				i++;
+			}
+			else
+				break;
+			
+		}
+		i = 0;
+		ArrayList<Person> iList = new ArrayList<Person>();
+		prs.add(new Person(0, "Name_0"));
+		prs.add(new Person(1, "Name_1"));
+		prs.add(new Person(2, "Name_2"));
+		Iterator<Person> iterArrayList = iList.iterator();
+		while (true) {
+			if (iterArrayList.hasNext()) {
+				assertEquals(iterArrayList.next(), iList.get(i));
+				i++;
+			}
+			else
+				break;
+			
+		}
+		
+	}
 		
 }

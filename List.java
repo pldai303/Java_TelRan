@@ -5,7 +5,7 @@ import java.util.Comparator;
 
 import java.util.function.Predicate;
 
-public interface List<T> {
+public interface List<T> extends Iterable<T> {
 
 	/**
 	 * adding obj at the end
