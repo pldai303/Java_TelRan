@@ -8,18 +8,11 @@ import java.util.function.Predicate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
-
-
-
-
-
-
 class ListTest {
 	private static final int N_PERSONS = 100;
 	List<Integer> listInt;
 	List<String> listString;
-	List<Person> listPersons;
+	List<Person> listPerson;
 	Person p1 = new Person(1, "Moshe");
 	Person p2 = new Person(2, "Alex");
 	
@@ -38,11 +31,28 @@ class ListTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		listInt = new LinkedList<>();
-		listInt.add(1); listInt.add(2);
-		listInt.add(3); listInt.add(4);
-		listInt.add(5); 
 		
+		listInt = new LinkedList<>();
+		listString = new LinkedList<>();
+		listPerson = new LinkedList<>();
+		
+		listInt.add(1);
+		listInt.add(2);
+		listInt.add(3);
+		listInt.add(4);
+		listInt.add(5);
+		
+		listString.add("one");
+		listString.add("two");
+		listString.add("three");
+		listString.add("four");
+		listString.add("five");
+		
+		listPerson.add(new Person(1, "Moshe"));
+		listPerson.add(new Person(2, "Anna"));
+		listPerson.add(new Person(3, "Daniel"));
+		listPerson.add(new Person(4, "Sara"));
+		listPerson.add(new Person(5, "Josef"));
 	}
 	
 	@Test 
@@ -125,6 +135,12 @@ class ListTest {
 			assertNotEquals(listInt.indexOf(listInt.get(i)),
 					listInt.lastIndexOf(listInt.get(i)));
 		}
+		int count = 0;
+		for (int num : listInt) {
+			count ++ ;
+		}
+		assertEquals(listInt.size(), count);
+		
 	}
 	@Test
 	void removeAll() throws Exception {
@@ -174,8 +190,8 @@ class ListTest {
 	void maxTest() {
 		
 		setUpPersons();
-		assertEquals(p2, List.max(listPersons));
-		assertEquals(p1, List.max(listPersons, new IdComparator()));
+		assertEquals(p2, List.max(listPerson));
+		assertEquals(p1, List.max(listPerson, new IdComparator()));
 		assertEquals(5, List.max(listInt));
 		
 	}
@@ -183,37 +199,47 @@ class ListTest {
 	void minTest() {
 		
 		setUpPersons();
-		assertEquals(p1, List.min(listPersons));
-		assertEquals(p2, List.min(listPersons, new IdComparator()));
+		assertEquals(p1, List.min(listPerson));
+		assertEquals(p2, List.min(listPerson, new IdComparator()));
 		assertEquals(1, List.min(listInt));
 	}
 
 
 	private void setUpPersons() {
-		listPersons = new LinkedList<>();
-		listPersons.add(p1);
-		listPersons.add(p2);
+		//listPersons = new LinkedList<>();
+		listPerson = new LinkedList<>();
+		listPerson.add(p1);
+		listPerson.add(p2);
 	}
 	@Test
 	void sortTest() {
 		setUpPersons();
-		listPersons.sort((p1, p2) -> p1.getName().compareTo(p2.getName()) );
-		assertEquals(p2, listPersons.get(0));
-		assertEquals(p1, listPersons.get(1));
-		listPersons.sort();
-		assertEquals(p1, listPersons.get(0));
-		assertEquals(p2, listPersons.get(1));
+		listPerson.sort((p1, p2) -> p1.getName().compareTo(p2.getName()) );
+		assertEquals(p2, listPerson.get(0));
+		assertEquals(p1, listPerson.get(1));
+		listPerson.sort();
+		assertEquals(p1, listPerson.get(0));
+		assertEquals(p2, listPerson.get(1));
 		fillRandomPersons(N_PERSONS);
-		listPersons.sort();
-		personsSortTest();
-		
+		listPerson.sort();
+		//personsSortTest();
+		sortTestIterator(listPerson);
 	}
 
 
-	private void personsSortTest() {
-		Person[] array = new Person[listPersons.size()];
+	private <T> void sortTestIterator(List<T> list) {
+		/*Person[] array = new Person[listPersons.size()];
 		fillArrayFromList(listPersons, array);
-		testArraySorted(array);
+		testArraySorted(array);*/
+		if (list.size() >= 2) {
+		Iterator<T> it1 = list.iterator();
+		Iterator<T> it2 = list.iterator();
+		it2.next();
+		while (it2.hasNext()) {
+			assertTrue( ((Comparable<T>)it1.next()).compareTo(it2.next()) <= 0);
+		}
+		}
+		 
 	}
 
 
@@ -235,7 +261,7 @@ class ListTest {
 
 	private void fillRandomPersons(int nPersons) {
 		for (int i = 0;  i < nPersons; i++) {
-			listPersons.add(new Person((int) (Math.random() * Integer.MAX_VALUE),
+			listPerson.add(new Person((int) (Math.random() * Integer.MAX_VALUE),
 					"name" + Math.random()));
 		}
 	}
@@ -301,7 +327,7 @@ class ListTest {
 	}	
 	
 	@Test
-	void TestIteraors() {
+	void testIteraors() {
 		int i = 0;
 		LinkedList<Person> prs = new LinkedList<Person>();
 		prs.add(new Person(0, "Name_0"));
@@ -319,9 +345,9 @@ class ListTest {
 		}
 		i = 0;
 		ArrayList<Person> iList = new ArrayList<Person>();
-		prs.add(new Person(0, "Name_0"));
-		prs.add(new Person(1, "Name_1"));
-		prs.add(new Person(2, "Name_2"));
+		iList.add(new Person(0, "Name_0"));
+		iList.add(new Person(1, "Name_1"));
+		iList.add(new Person(2, "Name_2"));
 		Iterator<Person> iterArrayList = iList.iterator();
 		while (true) {
 			if (iterArrayList.hasNext()) {
@@ -333,6 +359,25 @@ class ListTest {
 			
 		}
 		
+	}
+	@Test
+	void testIteratorRemove() {
+		List<Person> list = new ArrayList<Person>();
+		list.add(new Person(0,"Name 0"));
+		list.add(new Person(1,"Name 1"));
+		list.add(new Person(2,"Name 2"));
+		list.add(new Person(3,"Name 3"));
+		list.add(new Person(4,"Name 4"));
+		list.add(new Person(5,"Name 5"));
+		list.add(new Person(6,"Name 6"));
+		list.add(new Person(7,"Name 7"));
+		list.add(new Person(8,"Name 8"));
+		Iterator<Person> iterArrayList = list.iterator();
+		int j = 0;
+		for ( Iterator i = list.iterator(); i.hasNext(); ) {
+				i.remove();
+		} 
+		assertEquals(0, list.size());
 	}
 		
 }

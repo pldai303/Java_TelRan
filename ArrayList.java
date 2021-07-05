@@ -8,7 +8,7 @@ public class ArrayList<T>  extends AbstractList<T>  {
 
 	private static final int DEFAULT_CAPACITY = 16;
 	private T array[];
-	int size = 0;
+	
 	
 	private class ArrayListIterator implements Iterator<T> {
 		int index = 0;
@@ -19,11 +19,12 @@ public class ArrayList<T>  extends AbstractList<T>  {
 
 		@Override
 		public T next() {
-		 T current = array[index];
-		 index ++;
-		 return current;
+		 return array[index++];
 		}
-		
+		@Override
+		public void remove() {
+			ArrayList.this.remove(index);
+		}
 	}
 	
 
@@ -88,17 +89,7 @@ public class ArrayList<T>  extends AbstractList<T>  {
 		return remove(indexOf(pattern));
 	}
 
-	@Override
-	public void addAll(List<T> objects) {
-		int size = objects.size();
-		Iterator<T> iterator = objects.iterator();
-		for (int i=0; i<size; i++)
-		{
-			if (iterator.hasNext()) {
-				add(iterator.next());	
-			}
-		}
-	}
+
 
 	@Override
 	public T set(T object, int index) {
