@@ -6,7 +6,7 @@ import telran.employeers.dto.EmployeesCodes;
 import java.time.LocalDate;
 import java.util.*;
 
-public class ImployeesMethodsMapsImpl implements EmployeesMethods {
+public class EmployeesMethodsMapsImpl implements EmployeesMethods {
 
 	private HashMap<Long, Employee> employees = new HashMap<>();
 	private HashMap<String, List<Employee>> employeesDep = new HashMap<>();
@@ -30,11 +30,13 @@ public class ImployeesMethodsMapsImpl implements EmployeesMethods {
 	}
 
 	private void addEmployeeAge(Employee empl) {
-		employeesAge.computeIfAbsent(empl.getBirthDate().getYear(), n -> new LinkedList<Employee>()).add(empl);
+		employeesAge.computeIfAbsent(empl.getBirthDate().getYear(), 
+				n -> new LinkedList<Employee>()).add(empl);
 	}
 
 	private void addEmployeeDep(Employee empl) {
-		employeesDep.computeIfAbsent(empl.getDepartment(), n -> new LinkedList<Employee>()).add(empl);
+		employeesDep.computeIfAbsent(empl.getDepartment(), 
+				n -> new LinkedList<Employee>()).add(empl);
 	}
 
 	@Override
@@ -58,7 +60,7 @@ public class ImployeesMethodsMapsImpl implements EmployeesMethods {
 			return v;
 		});
 	}
-
+ 
 	private void removeEmployeeSalary(Employee empl) {
 		employeesSalary.compute(empl.getSalary(), (k, v) -> {
 			v.remove(empl);
@@ -104,7 +106,11 @@ public class ImployeesMethodsMapsImpl implements EmployeesMethods {
 			if (newSalary < 0) {
 				return EmployeesCodes.UNSATISFIED_VALUE;
 			}
-			getEmployee(id).setSalary(newSalary);
+			Employee oldEmpl = getEmployee(id);
+			Employee empl = new Employee(oldEmpl.getId(), 
+					newSalary, oldEmpl.getBirthDate(), oldEmpl.getDepartment());
+			removeEmployee(id);
+			addEmployee(empl);
 			return EmployeesCodes.OK;
 		} else {
 			return EmployeesCodes.NOT_FOUND;
@@ -114,7 +120,11 @@ public class ImployeesMethodsMapsImpl implements EmployeesMethods {
 	@Override
 	public EmployeesCodes updateDepartment(long id, String newDepartmen) {
 		if (checkIfExists(id)) {
-			getEmployee(id).setDepartment(newDepartmen);
+			Employee oldEmpl = getEmployee(id);
+			Employee empl = new Employee(oldEmpl.getId(), 
+					oldEmpl.getSalary(), oldEmpl.getBirthDate(), newDepartmen);
+			removeEmployee(id);
+			addEmployee(empl);
 			return EmployeesCodes.OK;
 		} else {
 			return EmployeesCodes.NOT_FOUND;
