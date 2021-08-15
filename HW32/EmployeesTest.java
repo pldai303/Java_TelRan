@@ -15,7 +15,7 @@ import telran.employeers.dto.EmployeesCodes;
 class EmployeesTest {
 
 	private static final int EMPLOYEES_N = 5;
-	private ImployeesMethodsMapsImpl obj = new ImployeesMethodsMapsImpl();
+	private EmployeesMethodsMapsImpl obj = new EmployeesMethodsMapsImpl();
 	private Employee[] arr = new Employee[EMPLOYEES_N];
 	private Iterable<Employee> empList;
 
