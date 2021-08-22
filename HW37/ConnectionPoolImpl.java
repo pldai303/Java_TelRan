@@ -7,6 +7,7 @@ import java.util.LinkedList;
 public class ConnectionPoolImpl implements ConnectionsPool {
 
 	private int size = 0;
+	private static final int LIMIT = 5;
 
 	private static class Node {
 		public Connection connection;
@@ -18,11 +19,13 @@ public class ConnectionPoolImpl implements ConnectionsPool {
 		}
 	}
 
-	private static Node head;
-	private static Node tail;
+//	private static Node head;
+//	private static Node tail;
+	private HashMap<Integer, Node> poolMap = new HashMap<>();
+	private ConnectionsList connectionsList = new ConnectionsList();
 
 	private class ConnectionPoolIterator implements Iterator<Connection> {
-		Node current = head;
+		Node current = connectionsList.head;
 
 		@Override
 		public boolean hasNext() {
@@ -33,12 +36,14 @@ public class ConnectionPoolImpl implements ConnectionsPool {
 		public Connection next() {
 			Connection res = current.connection;
 			current = current.next;
-			System.out.println(res);
 			return res;
 		}
 	}
 
 	private static class ConnectionsList {
+		Node head;
+		Node tail;
+
 		Node addNode(Connection connection) {
 			Node node = new Node(connection);
 			addFirst(node);
@@ -85,33 +90,33 @@ public class ConnectionPoolImpl implements ConnectionsPool {
 		return new ConnectionPoolIterator();
 	}
 
-	@Override
 	public void add(Connection connection) {
-		Node node = new Node(connection);
-		if (tail != null) {
-			tail.next = node;
-			node.prev = tail;
-			tail = node;
+		int connId = connection.getId();
+		Node node = null;
+		if (poolMap.containsKey(connId)) {
+			node = poolMap.get(connId);
+			if (!connectionsList.isFirst(node)) {
+				connectionsList.moveNode(node);
+			}
 		} else {
-			head = tail = node;
+			if (size == LIMIT) {
+				poolMap.remove(connectionsList.tail.connection.getId());
+				connectionsList.removeTail();
+				size--;
+			}
+			node = connectionsList.addNode(connection);
+			poolMap.put(connId, node);
+			size++;
 		}
-		size++;
 	}
 
 	@Override
 	public Connection get(int id) throws Exception {
-		Node current = head;
 		Connection res = null;
-		int size = getSize();
-		for (int i = 0; i < size; i++) {
-			if (current.connection.getId() == id) {
-				res = current.connection;
-				break;
-			}
-			current = current.next;
-		}
-		if (res == null) {
-			throw new NullPointerException("No such connection in connection pool");
+		try {
+			res = poolMap.get(id).connection;
+		} catch (Exception e) {
+			throw new Exception("No such connection");
 		}
 		return res;
 	}
