@@ -10,8 +10,8 @@ public abstract class AbstractCurrencyConverter extends CurrencyCountryMapper {
 	protected Map<String, Double> rates;
 	
 	@Override
-	public double convert(String currencyCountryFrom, String currencyCountryTo, int amount, Integer timeRefreshing) {
-		refresh(timeRefreshing);
+	public double convert(String currencyCountryFrom, String currencyCountryTo, int amount) {
+		refresh();
 		double rateFrom = getRate(currencyCountryFrom.toUpperCase());
 		double rateTo = getRate(currencyCountryTo.toUpperCase());
 		return (amount * rateTo) / rateFrom;
@@ -47,7 +47,7 @@ public abstract class AbstractCurrencyConverter extends CurrencyCountryMapper {
 		return getCurrencyList(amount, false);
 	}
 
-	protected abstract void refresh(Integer timeRefreshing);
+	protected abstract void refresh();
 	
 	protected AbstractCurrencyConverter(Map<String, Double> rates) {
 		this.rates = rates;
