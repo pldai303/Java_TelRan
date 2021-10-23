@@ -4,15 +4,14 @@ import java.util.stream.Collectors;
 
 public class Actions {
 
-	private static int counter;
-
-	private static void printRacerResults(Tarakan obj, int place) {
-		if (place == 1) {
-			System.out.printf("Number %d is on a %d place. Time: %d ms. (WINNER!)\n", obj.getNumber(), place,
-					obj.getTime());
-		} else {
-			System.out.printf("Number %d is on a %d place. Time: %d ms.\n", obj.getNumber(), place, obj.getTime());
-		}
+	private static boolean photofinish = false;
+	
+	public static void setPhotoFinish(boolean isFinished) {
+		photofinish = isFinished;
+	}
+	
+	public static boolean getPhotoFinish() {
+		return photofinish;
 	}
 
 	private Actions() {
@@ -46,12 +45,11 @@ public class Actions {
 
 				}
 			});
-			counter = 1;
-			racers.stream().sorted(Comparator.comparingLong(Tarakan::getTime)).collect(Collectors.toList())
-					.forEach(e -> {
-						printRacerResults(e, counter);
-						counter++;
-					});
+			racers.stream().forEach(e -> {
+				if (e.getWinnrer()) {
+					System.out.printf("Number %d is a WINNER \n", e.getNumber());
+				}
+			});
 			io.writeObjectLine("Race finished!");
 		} catch (Exception e) {
 			io.writeObjectLine(e.getMessage());

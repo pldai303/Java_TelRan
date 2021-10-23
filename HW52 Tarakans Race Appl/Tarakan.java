@@ -1,12 +1,10 @@
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 
 public class Tarakan extends Thread{
 	private static final int min = 2;
 	private static final int max = 5;
 	private int distance;
 	private int number;
-	private long time;
+	private boolean isWinner = false;
 	
 	public Tarakan(int distance, int number) {
 		this.distance = distance;
@@ -14,22 +12,27 @@ public class Tarakan extends Thread{
 	}
 	@Override
 	public void run() {
-		Instant start = Instant.now();
+		Actions.setPhotoFinish(false);
+		isWinner = false;
 		for (int i = 0; i < distance; i++) {
 			try {
-				sleep((int) ((Math.random() * (max - min)) + min));
+					if ((i == distance-1)  && (!Actions.getPhotoFinish())) {
+						Actions.setPhotoFinish(true);
+						isWinner = true;
+					} else {
+					sleep((int) ((Math.random() * (max - min)) + min));
+					}
 			} catch (InterruptedException e) {
 				
 			}
 		}
-		time = ChronoUnit.MILLIS.between(start, Instant.now());
-	}
-	
-	public long getTime() {
-		return time;
 	}
 	
 	public int getNumber() {
 		return number;
+	}
+	
+	public boolean getWinnrer() {
+		return isWinner;
 	}
 }
